@@ -8,12 +8,11 @@ const map = new maplibre.Map({
     style: {
         version: 8,
         sources: {
-            osm: {
+            googleSatellite: {
                 type: 'raster',
-                tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                tiles: ['https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'],
                 tileSize: 256,
-                attribution: '&copy; OpenStreetmap Contributors',
-                maxzoom: 19
+                attribution: '&copy; Google'
             },
             terrainSource: {
                 type: 'raster-dem',
@@ -27,9 +26,9 @@ const map = new maplibre.Map({
             }
         },
         layers: [{
-            id: 'osm',
+            id: 'googleSatellite',
             type: 'raster',
-            source: 'osm'
+            source: 'googleSatellite'
         }, {
             id: 'hills',
             type: 'hillshade',

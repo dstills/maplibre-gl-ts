@@ -10,7 +10,6 @@
     "target": "ES5",
     "experimentalDecorators": true,
     "preserveConstEnums": true,
-    "suppressImplicitAnyIndexErrors": true,
     "importHelpers": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true
