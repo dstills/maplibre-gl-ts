@@ -66,14 +66,49 @@ map.on('load', () => {
 })
 
 map.on('click', 'locations-symbols', e => {
-    const { locationid } = e.features[0].properties
-    let html = '<h3>' + locationid + '</h3>'
+    const { name } = e.features[0].properties
+    let html = '<h3>' + name + '</h3>'
     for (let property in e.features[0].properties) {
-        if (property === 'locationid') continue
+        if (property === 'name') continue
         html += `<p>${property}: ${e.features[0].properties[property]}</p>`
     }
     let popup = new maplibre.Popup({ offset: 25, className: 'locations-popup' })
         .setLngLat(e.lngLat)
         .setHTML(html)
         .addTo(map)
+})
+
+map.on('click', async e => {
+    let features = await map.queryRenderedFeatures(e.point, { layers: ['locations-symbols'] })
+    if (features.length) return
+    const coordinates = [e.lngLat.lng, e.lngLat.lat]
+    const name = await prompt('Enter new location name')
+    if (!name) return
+    const feature = {
+        type: 'Feature',
+        geometry: {
+            type: 'Point',
+            coordinates
+        },
+        properties: {
+            name,
+            latitude: e.lngLat.lat,
+            longitude: e.lngLat.lng
+        }
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/features/locations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(feature)
+        })
+        if (!response.ok) throw new Error(response.statusText)
+        const featureCollection = await response.json()
+        console.log('Success! New feature added: ', featureCollection)
+    } catch (err) {
+        console.error(err)
+    }
 })
